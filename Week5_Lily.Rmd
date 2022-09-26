@@ -1,0 +1,67 @@
+---
+title: "Week5 Activity-Visualizations"
+author: "Qingyuan Li"
+date: "2022-09-25"
+output: word_document
+theme: 
+  bootswatch: Flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Section 1: Description of Data
+
+The dataset I am using is the 2020 year's documented daily COVID cases and deaths data collected and published by New York Times. The primary data published are the daily cumulative number of cases and deaths reported in each county and state across the U.S. since the beginning of the pandemic, and I picked only the 2020 csv file. The data is the product of dozens of journalists working across several time zones to monitor news conferences, analyze data releases and seek clarification from public officials on how they categorize cases.This data is very helpful to study the most impactful COVID-19 cases/deaths surges and also the geographic time series of how it spreaded all over the US. The format is csv (a flat file). It is delimited by comma. It is not binary. 
+
+
+
+Section 2: Reading the Data into R
+
+```{r, include=FALSE}
+url <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties-2020.csv"
+data(package = "dplyr")
+covid <- read.csv(url)
+
+```
+
+
+Section 3: Clean the Data
+
+```{r, include=FALSE}
+#date <- strptime(covid$date,"%Y-%m-%d")
+#covid$date<-date
+covid
+# Change the format of date from character into date
+
+```
+
+
+Section 4: Visualization I - Washington county's cases and deaths
+
+```{r,include=FALSE}
+#pick three columns:
+library(dplyr)
+library(ggplot2)
+data<-subset(covid,fips==53061)
+```
+```{r,include=TRUE}
+ggplot(data = data) + 
+  geom_point(mapping = aes(x = deaths, y = cases)) +
+  geom_smooth(mapping = aes(x = deaths, y = cases))
+```
+In Washington County, the COVID-19 case number grows faster than deaths at first, but become a bit slower in the long run. 
+
+Section 5: Visualization II - The distribution of COVID-19 cases by the end of 2020 at county level
+
+The distribution is very right skewed. Most counties are having a below-average number of cases. 
+```{r,include=FALSE}
+data2<-subset(covid,date=='2020-12-31')
+```
+```{r,include=TRUE}
+ggplot(data2, aes(x=cases)) + 
+ geom_histogram(aes(y=..density..), colour="black", fill="white")+
+ geom_density(alpha=.2, fill="#FF6666") 
+```
